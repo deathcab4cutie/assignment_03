@@ -40,7 +40,7 @@ if package_data:
     except ValueError:
         st.error("That doesn't look like a package! "
                  "Try something like: 12 eggs in 1 carton / 3 cartons in 1 box"
-                 )
+        )
     else:
         total = calc_total_units(package)
         unit = get_unit(package)
