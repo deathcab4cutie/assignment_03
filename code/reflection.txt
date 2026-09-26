@@ -1,6 +1,17 @@
 Write your reflection here.
 
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (rerun, widget, return value, guard, bytes vs.
-text, decode, session state, initialise once, button-triggered, metric), and make
-it actionable.
+In this assignment I learned how to turn an uploaded file into text and how to write
+JSON file. I struggled initially with understanding the syntax and the logic of json.dump.
+Although the code was given in the README, I wanted to understand how it worked. I
+also learned about import order convention, as well as widget keys. I thought it was 
+interesting how the syntax for the keys required no spaces between the key and the =.
+
+Initially I had the code written exactly the way the intructions asked. However, I
+decided to add a try: and except: flow to the if condition/guard to handle error
+against ValueError (if something other than the eggs, cartons, and boxes were entered)
+and added my own error message in that case in ine_package.py. 
+
+I struggled the most with the last test that checked for protection against reruns. I
+vaguely remembered that Streamlit ran the whole script from the top upon each new
+interaction, but I initially did not have uploaded_file as a conditional for the loop;
+I only had button_clicked as a conditional.

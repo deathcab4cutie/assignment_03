@@ -20,21 +20,58 @@ Run it:  Run and Debug -> "Streamlit Run: Current File"   (see README Reference 
 Test it: pytest tests/test_streamlit.py -k process_files
 """
 
+import json
+
+import streamlit as st
+from packaging_parser import parse_packaging
+
 # --- The page ---------------------------------------------------------------------
-#
-# No scaffolding. You have written two of these now, and this one does the same
-# processing as process_file.py — the difference is that it remembers.
-#
-# What you have to work out for yourself:
-#
-#   - the three parts of the session-state pattern: initialise once, update on the
-#     click, display from state — README Reference #6
-#   - a button, key="process", so that choosing a file and clicking are two
-#     different things
-#   - two st.metric cards, "Files processed" and "Packages processed", side by side
-#     in st.columns(2), on the page from the first run
-#   - one st.info line per file processed so far, kept in a list
-#
-# README Step 7 names the two traps. The tests are built around them: choosing a
-# file without clicking must change nothing, and a rerun with the same file still
-# chosen must not count it again.
+
+st.title("Process Package Files")
+
+uploaded_file = st.file_uploader(
+    "Upload package file:",
+    key="package_file"
+)
+
+button_clicked = st.button("Process file", key="process")
+
+# --- The work ---------------------------------------------------------------------
+
+if "files_processed" not in st.session_state:
+    st.session_state.files_processed = 0
+    st.session_state.packages_processed = 0
+    st.session_state.history = []
+
+if uploaded_file and button_clicked:
+    text = uploaded_file.getvalue().decode("utf-8")
+    lines = text.splitlines()
+
+    packages = []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        packages.append(parse_packaging(line))
+
+    json_path = f"data/{uploaded_file.name.replace('.txt', '.json')}"
+    with open(json_path, "w") as json_file:
+        json.dump(packages, json_file, indent=4)
+
+    st.session_state.files_processed += 1
+    st.session_state.packages_processed += len(packages)
+    st.session_state.history.append(
+        f"{len(packages)} packages written to {json_path}"
+    )
+
+if st.button("Reset", key="reset"):
+    st.session_state.files_processed = 0
+    st.session_state.packages_processed = 0
+    st.session_state.history = []
+
+col1, col2 = st.columns(2)
+col1.metric("Files processed", st.session_state.files_processed)
+col2.metric("Packages processed", st.session_state.packages_processed)
+
+for summary in st.session_state.history:
+    st.info(summary)

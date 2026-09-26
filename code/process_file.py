@@ -14,12 +14,12 @@ Run it:  Run and Debug -> "Streamlit Run: Current File"   (see README Reference 
 Test it: pytest tests/test_streamlit.py -k process_file
 """
 
-# --- The page ---------------------------------------------------------------------
-
 import json
 
 import streamlit as st
 from packaging_parser import calc_total_units, get_unit, parse_packaging
+
+# --- The page ---------------------------------------------------------------------
 
 st.title("Process File of Packages")
 
@@ -27,6 +27,8 @@ uploaded_file = st.file_uploader(
     "Upload package file:",
     key="package_file"
 )
+
+# --- The work ---------------------------------------------------------------------
 
 if uploaded_file:
     text = uploaded_file.getvalue().decode("utf-8")
